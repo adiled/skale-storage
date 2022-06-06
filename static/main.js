@@ -14,7 +14,7 @@ window.skale = {
         } else if (apiEndpoint) {
             skale.fs = new filestorage(apiEndpoint);
         } else {
-            return Error({ message: "Either set global SKALE_RPC_PROVIDER or pass an API endpoint" });
+            throw { message: "Either set global SKALE_RPC_PROVIDER or pass an API endpoint" };
         }
     },
     local: {
