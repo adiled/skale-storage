@@ -35,7 +35,6 @@ function App (props) {
     }
 
     const handleApiEndpoint = () => {
-        console.log(apiEndpointField.current.value);
         skale.init(apiEndpointField.current.value);
     }
 
@@ -54,7 +53,6 @@ function App (props) {
                     let uploadingProgress = Number(((remoteFile.uploadingProgress || 0) + Math.random()).toFixed(2));
                     if(uploadingProgress > 100) {
                         uploadingProgress = 100;
-
                     }
                     return {
                         name: file.name,
@@ -78,7 +76,6 @@ function App (props) {
         if(!(localFolder && localFiles)) return;
 
         const interval = setInterval(() => {
-            console.log("interval", localFolder);
             fetchRemoteFiles();
         }, 2000);
 
@@ -87,24 +84,11 @@ function App (props) {
         }
     }, [localFolder, localFiles]);
 
-    // pre-load past dir path to state
-    useEffect(() => {
-        const path = localStorage.getItem("SKL-dir_path");
-        path && setRemoteDirPath(path);
-    }, []);
-
-    // given remote dir path, pull directory listing
-    useEffect(async () => {
-        if(!remoteDirPath) return;
-        fetchRemoteFiles();
-    }, [remoteDirPath]);
-
     // given local folder, traverse its files
     useEffect(async () => {
         if(!localFolder) return;
-        console.log(localFolder);
-        localStorage.setItem("SKL-local_folder", localFolder.name);
 
+        // assuming createDirectory implicitly doesnt dup
         const remoteDirPath = skale.fs && await skale.fs.createDirectory(ethAddress, localFolder.name, privateKey);
         remoteDirPath && setRemoteDirPath(remoteDirPath);
 
@@ -113,6 +97,12 @@ function App (props) {
         setLocalFiles(files);
 
     }, [localFolder]);
+
+        // given remote dir path, pull directory listing
+        useEffect(async () => {
+            if(!remoteDirPath) return;
+            fetchRemoteFiles();
+        }, [remoteDirPath]);
 
     // given traversed files, upload them to remote
     useEffect(async () => {
