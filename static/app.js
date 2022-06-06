@@ -2,7 +2,7 @@
 // methodologies and practices not to be taken seriously nor to scale
 
 import { createElement, render, Component, h } from 'https://unpkg.com/preact@latest?module';
-import { useState, useEffect } from 'https://unpkg.com/preact@latest/hooks/dist/hooks.module.js?module';
+import { useState, useEffect, useRef } from 'https://unpkg.com/preact@latest/hooks/dist/hooks.module.js?module';
 import htm from 'https://unpkg.com/htm?module';
 const html = htm.bind(h);
 
@@ -27,11 +27,16 @@ function App (props) {
     const [remoteDirPath, setRemoteDirPath] = useState(null);
     const [remoteFiles, setRemoteFiles] = useState(new Map()); // file.name => file
 
-    // shallow traverse a directory
+    const apiEndpointField = useRef(null);
 
     const handlePickFolder = async () => {
         const localFolder = await skale.local.loadDirectory();
         setLocalFolder(localFolder);
+    }
+
+    const handleApiEndpoint = () => {
+        console.log(apiEndpointField.current.value);
+        skale.init(apiEndpointField.current.value);
     }
 
     // fetch files inside remote directory
@@ -121,8 +126,8 @@ function App (props) {
     return html`
     <div>
         <section class="controls">
-            <input type="text" placeholder="Node API Endpoint"/>
-            <button onClick="${handlePickFolder}">✔️</button>
+            <input ref=${apiEndpointField} type="url" placeholder="Node API Endpoint"/>
+            <button onClick="${handleApiEndpoint}">✔️</button>
             ...
             <input onInput=${(e) => setEthAddress(e.target.value)} type="text" placeholder="Ethereum Address" />
             <input onInput=${(e) => setPrivateKey(e.target.value)} type="password" placeholder="Private Key 🙈" autocomplete="off"/>
