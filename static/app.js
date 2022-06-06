@@ -109,19 +109,20 @@ function App (props) {
         remoteDirPath && setRemoteDirPath(remoteDirPath);
 
         const [ totalSize, files ] = await skale.local.traverseDirectoryFiles(localFolder);
+        setLocalFolderSize(totalSize);
         setLocalFiles(files);
 
     }, [localFolder]);
 
     // given traversed files, upload them to remote
     useEffect(async () => {
-        if(!(localFiles && localFolderSize && skale.fs)) return;
-        skale.fs && skale.fs.reserveSpace(ethAddress, ethAddress, localFolderSize, privateKey);
+        if(!(localFiles && localFolderSize && skale.fs && ethAddress && privateKey)) return;
+        skale.fs && await skale.fs.reserveSpace(ethAddress, ethAddress, localFolderSize, privateKey);
         localFiles.forEach(file => {
-            // no need to await, path is fetched in dir list
+            // no need to await, paths are retrieved in dir fetch
             skale.fs.uploadFile(address, `${remoteDirPath}/${file.name}`, file.buffer, privateKey);
         });
-    }, [localFiles, localFolderSize, remoteDirPath]);
+    }, [localFiles, localFolderSize, remoteDirPath, ethAddress, privateKey]);
 
     return html`
     <div>
@@ -137,7 +138,7 @@ function App (props) {
         ${
             localFolder && html`
             <section class="files">
-            <p>🗀 ${localFolder.name} : ${remoteDirPath}</p>
+            <p>🗀 ${localFolder.name} : ${remoteDirPath || "Remote not set (simulating)"}</p>
             <table>
                 <tr>
                     <th style="min-width: 60%">Name</th>
