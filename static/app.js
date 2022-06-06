@@ -82,15 +82,12 @@ function App (props) {
         return () => {
             clearInterval(interval);
         }
+        
     }, [localFolder, localFiles]);
 
     // given local folder, traverse its files
     useEffect(async () => {
         if(!localFolder) return;
-
-        // assuming createDirectory implicitly doesnt dup
-        const remoteDirPath = skale.fs && await skale.fs.createDirectory(ethAddress, localFolder.name, privateKey);
-        remoteDirPath && setRemoteDirPath(remoteDirPath);
 
         const [ totalSize, files ] = await skale.local.traverseDirectoryFiles(localFolder);
         setLocalFolderSize(totalSize);
@@ -98,16 +95,29 @@ function App (props) {
 
     }, [localFolder]);
 
-        // given remote dir path, pull directory listing
-        useEffect(async () => {
-            if(!remoteDirPath) return;
-            fetchRemoteFiles();
-        }, [remoteDirPath]);
+    // set remote directory
+    useEffect(async () => {
+        if(!(localFolder && ethAddress && privateKey)) return;
+
+        // assuming createDirectory implicitly doesnt dup
+        const remoteDirPath = skale.fs && await skale.fs.createDirectory(ethAddress, localFolder.name, privateKey);
+        remoteDirPath && setRemoteDirPath(remoteDirPath);
+
+    }, [localFolder, ethAddress, privateKey]);
+
+    // given remote dir path, pull directory listing
+    useEffect(async () => {
+        if(!remoteDirPath) return;
+        
+        fetchRemoteFiles();
+        
+    }, [remoteDirPath]);
 
     // given traversed files, upload them to remote
     // nightmarish blind uploads
     useEffect(async () => {
         if(!(localFiles && localFolderSize && remoteDirPath && skale.fs && ethAddress && privateKey)) return;
+        
         try {
             skale.fs && await skale.fs.reserveSpace(ethAddress, ethAddress, localFolderSize, privateKey);
         } catch(e) {
@@ -117,6 +127,7 @@ function App (props) {
             // no need to await, paths are retrieved in dir fetch
             skale.fs.uploadFile(address, `${remoteDirPath}/${file.name}`, file.buffer, privateKey);
         });
+    
     }, [localFiles, localFolderSize, remoteDirPath, ethAddress, privateKey]);
 
     return html`
