@@ -1,0 +1,61 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background: #f3f3f3;
+    color: #333;
+    min-height: 100vh;
+}
+
+main {
+    width: 1000px;
+    margin: 20px auto 0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+input, button {
+    padding: 20px;
+    margin: 5px;
+    outline: none;
+    border: 0;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+input:focus {
+    outline: none;
+}
+
+input {
+    color: #333;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+}
+
+button {
+    cursor: pointer;
+    background-color: lightcoral;
+    color: #fff;
+}
+
+section {
+    margin: 10px 0;
+}
+
+.controls {
+
+}
+
+.files {
+    padding: 10px;
+    background: #fff;
+    border-radius: 10px 10px 0 0;
+}
+
+.files table {
+    width: 100%;
+}
+.files table th {
+    text-align: left;
+}
