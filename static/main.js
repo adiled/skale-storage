@@ -1,6 +1,6 @@
 console.log('globals', Web3, filestorage);
 
-SKALE_RPC_PROVIDER = 'https://kovan.infura.io/v3/';
+SKALE_RPC_PROVIDER = '';
 
 window.skale = {
     w3: null,
@@ -8,7 +8,7 @@ window.skale = {
     init: (apiEndpoint) => {
         console.info("setting up instances");
         if(SKALE_RPC_PROVIDER) {
-            const skaleProvider = new Web3.providers.HttpProvider('https://kovan.infura.io/v3/');
+            const skaleProvider = new Web3.providers.HttpProvider(SKALE_RPC_PROVIDER);
             skale.w3 = new Web3(skaleProvider);
             skale.fs = new filestorage(skale.w3, true);
         } else if (apiEndpoint) {
