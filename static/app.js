@@ -105,9 +105,14 @@ function App (props) {
         }, [remoteDirPath]);
 
     // given traversed files, upload them to remote
+    // nightmarish blind uploads
     useEffect(async () => {
-        if(!(localFiles && localFolderSize && skale.fs && ethAddress && privateKey)) return;
-        skale.fs && await skale.fs.reserveSpace(ethAddress, ethAddress, localFolderSize, privateKey);
+        if(!(localFiles && localFolderSize && remoteDirPath && skale.fs && ethAddress && privateKey)) return;
+        try {
+            skale.fs && await skale.fs.reserveSpace(ethAddress, ethAddress, localFolderSize, privateKey);
+        } catch(e) {
+            console.error("Failed to reserve space, continuing uploads anyways...", e);
+        }
         localFiles.forEach(file => {
             // no need to await, paths are retrieved in dir fetch
             skale.fs.uploadFile(address, `${remoteDirPath}/${file.name}`, file.buffer, privateKey);
