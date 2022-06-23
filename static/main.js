@@ -5,17 +5,11 @@ SKALE_RPC_PROVIDER = '';
 window.skale = {
     w3: null,
     fs: null,
-    init: (apiEndpoint) => {
+    init: (nodeEndpoint) => {
         console.info("setting up instances");
-        if(SKALE_RPC_PROVIDER) {
-            const skaleProvider = new Web3.providers.HttpProvider(SKALE_RPC_PROVIDER);
-            skale.w3 = new Web3(skaleProvider);
-            skale.fs = new filestorage(skale.w3, true);
-        } else if (apiEndpoint) {
-            skale.fs = new filestorage(apiEndpoint);
-        } else {
-            throw { message: "Either set global SKALE_RPC_PROVIDER or pass an API endpoint" };
-        }
+        const skaleProvider = new Web3.providers.HttpProvider(nodeEndpoint);
+        skale.w3 = new Web3(skaleProvider);
+        skale.fs = new filestorage(skale.w3, true);
     },
     local: {
         traverseDirectoryFiles: async function(dirHandle) {

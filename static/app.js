@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from 'https://unpkg.com/preact@latest/hoo
 import htm from 'https://unpkg.com/htm?module';
 const html = htm.bind(h);
 
-// smartish view component
+// single file view component
 const File = ({ local, remote = {} }) => {
     return html`<tr>
     <td class="file">🗎 ${local.name}</td>
@@ -61,7 +61,7 @@ function App (props) {
                 });
             }   
 
-            // state update
+            // state updateg
             let fileMap = new Map(remoteFiles);
             directoryList.forEach(record => {
                 fileMap.set(record.name, record);
@@ -133,11 +133,11 @@ function App (props) {
     return html`
     <div>
         <section class="controls">
-            <input ref=${apiEndpointField} type="url" placeholder="Node API Endpoint"/>
+            <input ref=${apiEndpointField} type="url" placeholder="somenode.com"/>
             <button onClick="${handleApiEndpoint}">✔️</button>
             ...
             <input onInput=${(e) => setEthAddress(e.target.value)} type="text" placeholder="Ethereum Address" />
-            <input onInput=${(e) => setPrivateKey(e.target.value)} type="password" placeholder="Private Key 🙈" autocomplete="off"/>
+            <input onInput=${(e) => setPrivateKey("0x"+e.target.value)} type="password" placeholder="Private Key 🙈" autocomplete="off"/>
             ...
             <button onClick="${handlePickFolder}">Pick Folder</button>
         </section>
